@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<zabbix_export>
+    <version>6.0</version>
+    <date>2024-01-21T10:00:00Z</date>
+    <groups>
+        <group>
+            <name>Templates/Mining</name>
+        </group>
+    </groups>
+    <templates>
+        <template>
+            <template>Template F2Pool Mining</template>
+            <name>Template F2Pool Mining</name>
+            <groups>
+                <group>
+                    <name>Templates/Mining</name>
+                </group>
+            </groups>
+            <applications>
+                <application>
+                    <name>F2Pool Hashrate</name>
+                </application>
+            </applications>
+            <items>
+                <item>
+                    <name>Current Hashrate for {$F2POOL.USERNAME}</name>
+                    <type>EXTERNAL</type>
+                    <key>f2pool.bitcoin.hash_rate[{$F2POOL.USERNAME}]</key>
+                    <delay>5m</delay>
+                    <value_type>FLOAT</value_type>
+                    <units>TH/s</units>
+                    <description>Current hashrate in terahashes per second</description>
+                    <applications>
+                        <application>F2Pool Hashrate</application>
+                    </applications>
+                </item>
+                <item>
+                    <name>1h Average Hashrate for {$F2POOL.USERNAME}</name>
+                    <type>EXTERNAL</type>
+                    <key>f2pool.bitcoin.h1_hash_rate[{$F2POOL.USERNAME}]</key>
+                    <delay>5m</delay>
+                    <value_type>FLOAT</value_type>
+                    <units>TH/s</units>
+                    <description>1-hour average hashrate</description>
+                    <applications>
+                        <application>F2Pool Hashrate</application>
+                    </applications>
+                </item>
+                <item>
+                    <name>24h Average Hashrate for {$F2POOL.USERNAME}</name>
+                    <type>EXTERNAL</type>
+                    <key>f2pool.bitcoin.h24_hash_rate[{$F2POOL.USERNAME}]</key>
+                    <delay>5m</delay>
+                    <value_type>FLOAT</value_type>
+                    <units>TH/s</units>
+                    <description>24-hour average hashrate</description>
+                    <applications>
+                        <application>F2Pool Hashrate</application>
+                    </applications>
+                </item>
+                <item>
+                    <name>1h Rejected Hashrate for {$F2POOL.USERNAME}</name>
+                    <type>EXTERNAL</type>
+                    <key>f2pool.bitcoin.h1_stale_rate[{$F2POOL.USERNAME}]</key>
+                    <delay>5m</delay>
+                    <value_type>FLOAT</value_type>
+                    <units>TH/s</units>
+                    <description>1-hour rejected hashrate</description>
+                    <applications>
+                        <application>F2Pool Hashrate</application>
+                    </applications>
+                </item>
+                <item>
+                    <name>24h Rejected Hashrate for {$F2POOL.USERNAME}</name>
+                    <type>EXTERNAL</type>
+                    <key>f2pool.bitcoin.h24_stale_rate[{$F2POOL.USERNAME}]</key>
+                    <delay>5m</delay>
+                    <value_type>FLOAT</value_type>
+                    <units>TH/s</units>
+                    <description>24-hour rejected hashrate</description>
+                    <applications>
+                        <application>F2Pool Hashrate</application>
+                    </applications>
+                </item>
+                <item>
+                    <name>24h Delayed Hashrate for {$F2POOL.USERNAME}</name>
+                    <type>EXTERNAL</type>
+                    <key>f2pool.bitcoin.h24_delay_rate[{$F2POOL.USERNAME}]</key>
+                    <delay>5m</delay>
+                    <value_type>FLOAT</value_type>
+                    <units>TH/s</units>
+                    <description>24-hour delayed hashrate</description>
+                    <applications>
+                        <application>F2Pool Hashrate</application>
+                    </applications>
+                </item>
+                <item>
+                    <name>Rejection Rate for {$F2POOL.USERNAME}</name>
+                    <type>EXTERNAL</type>
+                    <key>f2pool.bitcoin.rejection_rate[{$F2POOL.USERNAME}]</key>
+                    <delay>5m</delay>
+                    <value_type>FLOAT</value_type>
+                    <units>%</units>
+                    <description>Hashrate rejection rate percentage</description>
+                    <applications>
+                        <application>F2Pool Hashrate</application>
+                    </applications>
+                </item>
+            </items>
+            <discovery_rules/>
+            <macros>
+                <macro>
+                    <macro>{$F2POOL.USERNAME}</macro>
+                    <value>default</value>
+                    <description>F2Pool username to monitor</description>
+                </macro>
+                <macro>
+                    <macro>{$HASHRATE.MIN.WARN}</macro>
+                    <value>100</value>
+                    <description>Minimum acceptable hashrate in TH/s</description>
+                </macro>
+                <macro>
+                    <macro>{$REJECTION.MAX.WARN}</macro>
+                    <value>2</value>
+                    <description>Maximum acceptable rejection rate in %</description>
+                </macro>
+            </macros>
+            <triggers>
+                <trigger>
+                    <name>High rejection rate for {$F2POOL.USERNAME}</name>
+                    <expression>last(/Template F2Pool Mining/f2pool.bitcoin.rejection_rate[{$F2POOL.USERNAME}])&gt;{$REJECTION.MAX.WARN}</expression>
+                    <priority>WARNING</priority>
+                    <description>Rejection rate is higher than {$REJECTION.MAX.WARN}%</description>
+                </trigger>
+                <trigger>
+                    <name>Low hashrate for {$F2POOL.USERNAME}</name>
+                    <expression>last(/Template F2Pool Mining/f2pool.bitcoin.hash_rate[{$F2POOL.USERNAME}])&lt;{$HASHRATE.MIN.WARN}</expression>
+                    <priority>WARNING</priority>
+                    <description>Current hashrate is below {$HASHRATE.MIN.WARN} TH/s</description>
+                </trigger>
+                <trigger>
+                    <name>Hashrate dropped by 20% for {$F2POOL.USERNAME}</name>
+                    <expression>last(/Template F2Pool Mining/f2pool.bitcoin.hash_rate[{$F2POOL.USERNAME}]) &lt; last(/Template F2Pool Mining/f2pool.bitcoin.h24_hash_rate[{$F2POOL.USERNAME}]) * 0.8</expression>
+                    <priority>WARNING</priority>
+                    <description>Current hashrate is 20% lower than 24h average</description>
+                </trigger>
+            </triggers>
+            <graphs>
+                <graph>
+                    <name>F2Pool Hashrate Overview</name>
+                    <graph_items>
+                        <graph_item>
+                            <color>1A7C11</color>
+                            <item>
+                                <host>Template F2Pool Mining</host>
+                                <key>f2pool.bitcoin.hash_rate[{$F2POOL.USERNAME}]</key>
+                            </item>
+                        </graph_item>
+                        <graph_item>
+                            <color>F63100</color>
+                            <item>
+                                <host>Template F2Pool Mining</host>
+                                <key>f2pool.bitcoin.h24_stale_rate[{$F2POOL.USERNAME}]</key>
+                            </item>
+                        </graph_item>
+                    </graph_items>
+                </graph>
+            </graphs>
+        </template>
+    </templates>
+</zabbix_export>
