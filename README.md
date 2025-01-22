@@ -3,7 +3,7 @@ F2Pool API script to monitor hashrate with Zabbix 5
 
 # How it works
 
-* Get metrics from F2pool thrue API
+* Get metrics from F2pool through API
 * Parse data from JSON output
 * Store data into Zabbix
 
